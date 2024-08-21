@@ -2,11 +2,11 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const path = require('path'); // path 모듈 추가
 require('dotenv').config(); // 환경 변수를 사용하기 위해 dotenv 패키지 추가
+const path = require('path'); // 추가
 
 const app = express();
-const port = 3000;
+const port = 4000; // 포트 번호를 4000으로 변경
 
 // MongoDB Atlas 연결
 const mongoURI = process.env.MONGO_URI; // 환경 변수에서 MongoDB URI 가져오기
@@ -25,9 +25,7 @@ const User = mongoose.model('User', userSchema);
 
 // 미들웨어 설정
 app.use(express.json()); // express.json() 사용
-
-// 정적 파일 제공을 위한 미들웨어
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); // static files
 
 // JWT 비밀 키
 const JWT_SECRET = process.env.JWT_SECRET; // 환경 변수에서 JWT 비밀 키 가져오기
@@ -90,14 +88,9 @@ app.post('/add-user', async (req, res) => {
     }
 });
 
-// 로그인 페이지 라우트 추가
+// 로그인 페이지 제공
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
-// 홈 페이지 라우트 (예: 로그인 후 리다이렉트할 페이지)
-app.get('/', (req, res) => {
-    res.send('Welcome to the home page!');
 });
 
 app.listen(port, () => {
