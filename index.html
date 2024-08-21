@@ -1,28 +1,89 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">
-            <img src="pepsi-logo.png" alt="Pepsi Logo">
-        </div>
-        <form>
-            <input type="text" placeholder="아이디" class="input-field">
-            <input type="password" placeholder="비밀번호" class="input-field">
-            <button type="submit" class="login-button">로그인</button>
-            <button type="button" class="signup-button">가입신청</button>
+    <div class="container">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
         </form>
-        <div class="telegram-link">
-            <a href="https://t.me/PEPS1118" target="_blank">
-                <img src="telegram-logo.png" alt="Telegram">
-                @PEPS1118 바로가기
-            </a>
-        </div>
+        <p id="message"></p>
     </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('token', result.token);
+                    window.location.href = 'admin.html'; // 성공 시 관리자 페이지로 이동
+                } else {
+                    document.getElementById('message').innerText = result.message;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('message').innerText = 'An error occurred.';
+            }
+        });
+    </script>
 </body>
 </html>
